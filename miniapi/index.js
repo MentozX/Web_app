@@ -11,9 +11,30 @@ app.use(cors())
 app.use(bodyParser.json())
 
 const users = [
-  { id: 1, login: 'admin', password: 'admin123', role: 'admin', name: 'Jan Kowalski' },
-  { id: 2, login: 'dev', password: 'dev123', role: 'developer', name: 'Ewa Nowak' },
-  { id: 3, login: 'ops', password: 'ops123', role: 'devops', name: 'Adam Zielinski' },
+  {
+    id: 'user1',
+    login: 'admin',
+    password: 'admin123',
+    role: 'admin',
+    firstName: 'Jan',
+    lastName: 'Kowalski',
+  },
+  {
+    id: 'user2',
+    login: 'dev',
+    password: 'dev123',
+    role: 'developer',
+    firstName: 'Ewa',
+    lastName: 'Nowak',
+  },
+  {
+    id: 'user3',
+    login: 'ops',
+    password: 'ops123',
+    role: 'devops',
+    firstName: 'Adam',
+    lastName: 'Zieliński',
+  },
 ]
 
 app.post('/auth/login', (req, res) => {

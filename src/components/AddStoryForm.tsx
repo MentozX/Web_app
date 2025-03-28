@@ -13,9 +13,9 @@ export function AddStoryForm() {
     e.preventDefault()
     const projectId = ProjectAPI.getActiveProjectId()
     const user = await UserAPI.getCurrentUser()
-
-    if (!projectId || !name.trim()) return
-
+  
+    if (!projectId || !name.trim() || !user) return
+  
     StoryAPI.add({
       name,
       description,
@@ -24,13 +24,14 @@ export function AddStoryForm() {
       projectId,
       ownerId: user.id,
     })
-
+  
     setName('')
     setDescription('')
     setPriority('medium')
     setStatus('todo')
     window.location.reload()
   }
+  
 
   return (
     <form onSubmit={handleSubmit}>

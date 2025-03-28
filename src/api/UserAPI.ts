@@ -29,31 +29,38 @@ const mockUsers: User[] = [
 ]
 
 export class UserAPI {
-    static getCurrentUser(): Promise<User> {
-      const token = localStorage.getItem('token')
-      return fetch('http://localhost:3000/me', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }).then((res) => res.json())
-    }
-  
-    static getAll(): User[] {
-      return mockUsers
-    }
-  
-    static getById(id: string): User | undefined {
-      return mockUsers.find((u) => u.id === id)
-    }
-  
-    static getAssignableUsers(): User[] {
-      return mockUsers.filter((u) => u.role === 'developer' || u.role === 'devops')
-    }
-    static getCachedUser(): User | null {
-        const json = localStorage.getItem('user')
-        if (!json) return null
-        return JSON.parse(json)
-    }
-      
+  static async getCurrentUser(): Promise<User | null> {
+    const token = localStorage.getItem('token')
+    if (!token) return null
+
+    const res = await fetch('http://localhost:3000/me', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    if (!res.ok) return null
+
+    return await res.json()
   }
-  
+
+  static getAll(): User[] {
+    return mockUsers
+  }
+
+  static getById(id: string): User | undefined {
+    return mockUsers.find((u) => u.id === id)
+  }
+
+  static getAssignableUsers(): User[] {
+    return mockUsers.filter(
+      (u) => u.role === 'developer' || u.role === 'devops'
+    )
+  }
+
+  static getCachedUser(): User | null {
+    const json = localStorage.getItem('user')
+    if (!json) return null
+    return JSON.parse(json)
+  }
+}

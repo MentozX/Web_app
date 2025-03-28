@@ -1,40 +1,48 @@
-import { useState } from 'react'
+// src/components/LoginForm.tsx
+
+import { useState } from 'react';
 
 export function LoginForm() {
-  const [login, setLogin] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState<string | null>(null)
+  const [login, setLogin] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    setError(null)
+    e.preventDefault();
+    setError(null);
 
     try {
       const res = await fetch('http://localhost:3000/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ login, password }),
-      })
+      });
 
       if (!res.ok) {
-        const data = await res.json()
-        setError(data.error || 'Błąd logowania')
-        return
+        const data = await res.json();
+        setError(data.error || 'Błąd logowania');
+        return;
       }
 
-      const { token, refreshToken } = await res.json()
-      localStorage.setItem('token', token)
-      localStorage.setItem('refreshToken', refreshToken)
+      const { token, refreshToken } = await res.json();
+      localStorage.setItem('token', token);
+      localStorage.setItem('refreshToken', refreshToken);
 
       const meRes = await fetch('http://localhost:3000/me', {
         headers: { Authorization: `Bearer ${token}` },
-      })
+      });
 
-      const user = await meRes.json()
-        localStorage.setItem('user', JSON.stringify(user))
-        alert(`Zalogowano jako ${user.name} (${user.role})`)
+      if (!meRes.ok) {
+        setError('Błąd podczas pobierania danych użytkownika');
+        return;
+      }
+
+      const user = await meRes.json();
+      localStorage.setItem('user', JSON.stringify(user));
+      alert(`Zalogowano jako ${user.firstName} ${user.lastName} (${user.role})`);
+      window.location.reload();
     } catch (err) {
-      setError('Błąd połączenia z serwerem')
+      setError('Błąd połączenia z serwerem');
     }
   }
 
@@ -58,5 +66,5 @@ export function LoginForm() {
       <button type="submit">Zaloguj</button>
       {error && <p style={{ color: 'red' }}>{error}</p>}
     </form>
-  )
+  );
 }
